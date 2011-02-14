@@ -2,8 +2,9 @@ jQuery.fn.exists = function(){return jQuery(this).length>0;}
 
 
 var Candidate = $.Class.create({
-initialize: function(obj) {
+initialize:function(obj, index) {
 	//1	马亚娜	F	Dev	Master	西安交通大学	信息工程	13772148940	12	11	26	47
+	index = 6;
 	this.id = obj[0] - 0;
 	this.name = obj[1];
 	this.gender = obj[2];
@@ -15,8 +16,8 @@ initialize: function(obj) {
 	this.w_correct = obj[8] - 0;
 	this.w_answered = obj[9]  - 0;
 	if (obj[10] == null) {
-		day = (this.id / 50) + 1
-		group = (((this.id -1) / 10) + 1) % 5
+		day = ((this.id -1) / (index * 5)) + 1
+		group = ((this.id -1) / index % 5) + 1
 		this.group = "G-" + Math.floor(day) + "-" + Math.floor(group);
 	} else {
 		this.group = obj[10]
