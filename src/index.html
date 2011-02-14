@@ -97,6 +97,17 @@
 								</div>
 							</div>
 							<div class="form-fieldset-instructions">Please enter the information above.</div>
+							<div class="form-fieldset-instructions">
+								<span>Please select the size of one group:</span>
+								<select id="group-size">
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+								</select>
+							</div>
 							<div class="form-button-container">
 								<div class="form-button" id="confirm-button">
 									<span>Reset Data</span>
@@ -160,13 +171,13 @@
 					navigate_to($(this).find('.list-item-leaf'));
 				});
 				$("#confirm-button").click(function(){
-					import_candidates($("#import-data"));
+					import_candidates($("#import-data"), $("#group-size"));
 				});
 				$("#open-export-button").click(function(){
-					export_candidates($("#export-data"));
+					export_candidates($("#export-data"), $("#group-size"));
 				});
 				$("#open-statisic-container").click(function(){
-					var candidates = new Candidates();
+					var candidates = new Candidates($("#group-size").val());
 					candidates.load();
 
 					var diversityPie = new RGraph.Pie('diversity-chart-canvas', [candidates.females_amount(),candidates.males_amount()]);
@@ -195,7 +206,7 @@
 		            diversityPie.Draw();
 				});
 
-				var candidates = new Candidates();
+				var candidates = new Candidates($("#group-size").val());
 				candidates.try_persist_and_load($("#import-data").val())
 				candidates.render();
 				init_pages();	

@@ -62,8 +62,8 @@ function index_in_scople(parent, current_elem, select) {
 	return -1;
 }
 
-function import_candidates(data_from){
-	var candidates = new Candidates()
+function import_candidates(data_from, group_size){
+	var candidates = new Candidates(group_size.val())
 	if (data_from.val().trim() == "") {
 		candidates.clear();
 		return;
@@ -71,10 +71,10 @@ function import_candidates(data_from){
 	candidates.fromCSV(data_from.val())
 	candidates.persist();
 	candidates.render();
-	init_pages();
+	init_pages(group_size.val());
 }
 
-function init_pages() {
+function init_pages(group_size) {
 	$(".sub-tab-button-container").click(function(){
 		switch_to_group($(this).find('.sub-tab-button'));
 	});
@@ -89,15 +89,15 @@ function init_pages() {
 			accept: ".candidate",
 			activeClass: "ui-state-highlight",
 			drop: function( event, ui ) {
-				var candidates = new Candidates();
+				var candidates = new Candidates(group_size);
 				candidates.load()
 				candidates.rank(ui.draggable,$(this));
 			}
 	});
 }
 
-function export_candidates(data_to){
-	var candidates = new Candidates()
+function export_candidates(data_to, group_size){
+	var candidates = new Candidates(group_size.val())
 	candidates.load();
 	data_to.val(candidates.export_as())
 }

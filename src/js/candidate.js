@@ -3,8 +3,8 @@ jQuery.fn.exists = function(){return jQuery(this).length>0;}
 
 var Candidate = $.Class.create({
 initialize:function(obj, index) {
-	//1	马亚娜	F	Dev	Master	西安交通大学	信息工程	13772148940	12	11	26	47
-	index = 6;
+	//1	马亚娜	F	Dev	Master	西安交通大学	信息工程	13772148940	12	11	26	4
+	// index = 6;
 	this.id = obj[0] - 0;
 	this.name = obj[1];
 	this.gender = obj[2];

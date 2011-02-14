@@ -3,8 +3,9 @@ function getLocalStorage() {
 }
 
 var Candidates = $.Class.create({
-	initialize: function() {
+	initialize: function(group_size) {
 		this._candidates = [];
+		this.group_size = group_size;
 	},
 	// methods
 	size: function() {
@@ -39,7 +40,7 @@ var Candidates = $.Class.create({
 				continue;
 			}
 			this.init_id_for_first_time(objs[i], i)
-			this._candidates.push(new Candidate(objs[i]))
+			this._candidates.push(new Candidate(objs[i], this.group_size))
 		}
 	},
 	init_id_for_first_time:function(objs, i) {

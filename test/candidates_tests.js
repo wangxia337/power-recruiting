@@ -1,5 +1,5 @@
 test("should parse the single candidate", function() {
-	var candidates = new Candidates();
+	var candidates = new Candidates(10);
 	candidates.fromCSV("马亚娜	F	西安交通大学	信息工程	13772148940	12	11	26	47");
 	equals(1, candidates.size())
 	candidate = candidates.find(1)
@@ -17,7 +17,7 @@ test("should parse the single candidate", function() {
 });
 
 test("should parse multiple candidates", function() {
-	var candidates = new Candidates();
+	var candidates = new Candidates(10);
 	candidates.fromCSV("马亚娜	F	西安交通大学	信息工程	13772148940	12	11	26	47\n"
 	+ "沈瞳	M	西安交通大学	计算机科学与技术	13659245448	12	11	37	45");
 	equals(2, candidates.size())
@@ -28,25 +28,42 @@ test("should parse multiple candidates", function() {
 });
 
 test("should parse multiple candidates 2", function() {
-	var candidates = new Candidates();
+	var candidates = new Candidates(10);
 	candidates.fromCSV("沈瞳	男	西安交通大学	计算机科学与技术	13659245448	12	11	37	45\n"
 	+ "张中夏	男	西北工业大学	计算机科学与技术	13636818146	12	11	29	44\n"
 	+ "王奇凡	男	西安交通大学	计算机系统结构	13572945374	12	11	27	46\n");
-	equals(3, candidates.size())
-	candidate = candidates.find(3)
+	equals(3, candidates.size());
+	candidate = candidates.find(3);
 	equals(3, candidate.id);
 	equals("王奇凡", candidate.name);
 	equals("G-1-1", candidate.group);
 });
 
+test("should parse multiple candidates when the students number more than the group size", function() {
+	var candidates = new Candidates(3);
+	candidates.fromCSV("沈瞳	男	西安交通大学	计算机科学与技术	13659245448	12	11	37	45\n"
+	+ "张中夏	男	西北工业大学	计算机科学与技术	13636818146	12	11	29	44\n"
+	+ "王中磊	男	电信学院	计算机科学与技术	15934840819	12	11	16	20\n"
+	+ "王奇凡	男	西安交通大学	计算机系统结构	13572945374	12	11	27	46\n");
+	equals(4, candidates.size());
+	candidateOne = candidates.find(3);
+	equals(3, candidateOne.id);
+	equals("王中磊", candidateOne.name);
+	equals("G-1-1", candidateOne.group);
+	candidateTwo = candidates.find(4)
+	equals(4, candidateTwo.id);
+	equals("王奇凡", candidateTwo.name);
+	equals("G-1-2", candidateTwo.group);
+})
+
 test("should escape the header", function() {
-	var candidates = new Candidates();
+	var candidates = new Candidates(10);
 	candidates.fromCSV("姓名	性别	学校	专业	电话	L正确	L答题	W正确	W答题");
 	equals(0, candidates.size())
 });
 
 test("should parse the single candidate", function() {
-	var candidates = new Candidates();
+	var candidates = new Candidates(10);
 
 	candidates.fromCSV("马亚娜	F	西安交通大学	信息工程	13772148940	12	11	26	47");
 	equals("1	马亚娜	F	西安交通大学	信息工程	13772148940	12	11	26	47	G-1-1	D", candidates.toCSV());
@@ -87,7 +104,7 @@ test("should save the candidate into storage", function() {
 	candidates.add(candidate1);
 	candidates.add(candidate2);
 	candidates.persist();
-	var brandnew = new Candidates();
+	var brandnew = new Candidates(10);
 	brandnew.load()
 	equals(2, brandnew.size())
 });
@@ -95,7 +112,7 @@ test("should save the candidate into storage", function() {
 
 module("setup test", {
 	setup: function() {
-		var candidate = new Candidate([12, "马亚娜", "F","西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47]);
+		var candidate = new Candidate([12, "马亚娜", "F","西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47], 10);
 		var groupid = candidate.group + '-panel';
 		var html = '<div id="' + groupid + '" class="group" style="">'
 					+ '<div class="grade gradeB ui-droppable"></div>'
@@ -116,7 +133,7 @@ module("setup test", {
 });
 
 test("should first remove everything before render all", function() {
-	var candidate = new Candidate([12, "马亚娜", "F",  "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47]);
+	var candidate = new Candidate([12, "马亚娜", "F",  "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47], 10);
 	candidate.render();
 	equals($(".gradeD #" + candidate.id).exists(), true)
 	
@@ -130,7 +147,7 @@ test("should first remove everything before render all", function() {
 
 module("setup test", {
 	setup: function() {
-		var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47]);
+		var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47], 10);
 		var groupid = candidate.group + '-panel';
 		var html = '<div id="' + groupid + '" class="group" style="">'
 					+ 	'<div class="grade gradeA"><div class="grade-bg-text">Rank 1</div></div>'
@@ -154,8 +171,8 @@ module("setup test", {
 });
 
 test("should render add the water mark to all group back-in", function() {
-	var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47]);
-	var candidates = new Candidates();
+	var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47], 10);
+	var candidates = new Candidates(10);
 	candidates.add(candidate);
 	equals($(".grade1 .grade-bg-text").html(), "Rank 1")
 	candidates.render();
@@ -163,8 +180,8 @@ test("should render add the water mark to all group back-in", function() {
 });
 
 test("should render add the water mark to specific group back-in", function() {
-	var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47]);
-	var candidates = new Candidates();
+	var candidate = new Candidate([12, "马亚娜", "F", "西安交通大学", "信息工程", "13772148940", 12, 11, 26, 47], 10);
+	var candidates = new Candidates(10);
 	candidates.add(candidate);
 	equals($(".gradeA .grade-bg-text").html(), "Rank 1")
 	candidates.render();
